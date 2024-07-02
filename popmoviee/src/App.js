@@ -84,7 +84,15 @@ function NumResult() {
     </>
   );
 }
-
+function Navbar() {
+  return (
+    <nav className="nav-bar">
+      <Logo />
+      <Search />
+      <NumResult />
+    </nav>
+  );
+}
 function MovieList() {
   const [movies, setMovies] = useState(tempMovieData);
   const [isOpen1, setIsOpen1] = useState(true);
@@ -183,19 +191,20 @@ function WatchedList() {
   );
 }
 
+function Main() {
+  return (
+    <main className="main">
+      <MovieList />
+      <WatchedList />
+    </main>
+  );
+}
+
 export default function App() {
   return (
     <>
-      <nav className="nav-bar">
-        <Logo />
-        <Search />
-        <NumResult />
-      </nav>
-
-      <main className="main">
-        <MovieList />
-        <WatchedList />
-      </main>
+      <Navbar />
+      <Main />
     </>
   );
 }
