@@ -201,9 +201,16 @@ export default function App() {
   //   .then((res) => res.json())
   //   .then((data) => setMovies(data));
   useEffect(() => {
-    fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=oppenheimer`)
-      .then((res) => res.json())
-      .then((data) => setMovies(data.Search));
+    async function fetchMovie() {
+      const res = await fetch(
+        `http://www.omdbapi.com/?apikey=${API_KEY}&s=oppenheimer`
+      );
+      const data = await res.json();
+      setMovies(data.Search);
+      console.log(data.Search);
+    }
+
+    fetchMovie();
   }, []);
   return (
     <>
