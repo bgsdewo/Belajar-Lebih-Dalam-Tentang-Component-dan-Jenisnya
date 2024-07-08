@@ -191,18 +191,10 @@ function BoxMovies({ element }) {
 function Main({ children }) {
   return <main className="main">{children}</main>;
 }
-const API_KEY = "4c14ac1";
-export default function App() {
-  const [movies, setMovies] = useState([]);
-  const [watched, setWatched] = useState(tempWatchedData);
 
-  //ini gaboleh karena mengakibatkan infinty loop
-  // fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=oppenheimer`)
-  //   .then((res) => res.json())
-  //   .then((data) => setMovies(data));
-  fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=oppenheimer`)
-    .then((res) => res.json())
-    .then((data) => console.log(data));
+export default function App() {
+  const [movies, setMovies] = useState(tempMovieData);
+  const [watched, setWatched] = useState(tempWatchedData);
   return (
     <>
       <NavBar>
