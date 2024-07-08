@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const tempMovieData = [
   {
@@ -200,9 +200,11 @@ export default function App() {
   // fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=oppenheimer`)
   //   .then((res) => res.json())
   //   .then((data) => setMovies(data));
-  fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=oppenheimer`)
-    .then((res) => res.json())
-    .then((data) => console.log(data));
+  useEffect(() => {
+    fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=oppenheimer`)
+      .then((res) => res.json())
+      .then((data) => setMovies(data.Search));
+  }, []);
   return (
     <>
       <NavBar>
