@@ -60,8 +60,7 @@ function Logo() {
     </>
   );
 }
-function Search() {
-  const [query, setQuery] = useState("");
+function Search({ query, setQuery }) {
   return (
     <>
       <input
@@ -215,25 +214,30 @@ export default function App() {
   const [watched, setWatched] = useState(tempWatchedData);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const query = "oppenheimer";
-  //ini gaboleh karena mengakibatkan infinty loop
-  // fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=oppenheimer`)
-  //   .then((res) => res.json())
-  //   .then((data) => setMovies(data));
+  const [query, setQuery] = useState("");
+  const tempQuery = "oppenheimer";
+
+  useEffect(() => {
+    console.log(1);
+  }, []);
+
+  useEffect(() => {
+    console.log(2);
+  });
+
+  console.log(3);
   useEffect(() => {
     async function fetchMovie() {
       try {
         setIsLoading(true);
         const res = await fetch(
-          `http://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`
+          `http://www.omdbapi.com/?s=${tempQuery}&apikey=${API_KEY}`
         );
         if (!res.ok) throw new Error("Ada kesalahan");
         const data = await res.json();
         //cek kondisi data dri api
         if (data.Response === "False") throw new Error(data.Error);
 
-        //cek jika ada dari API yg salah
-        console.log(data);
         setMovies(data.Search);
         setIsLoading(false);
       } catch (error) {
@@ -249,7 +253,7 @@ export default function App() {
     <>
       <NavBar>
         <Logo />
-        <Search />
+        <Search query={query} setQuery={setQuery} />
         <NumResult movies={movies} />
       </NavBar>
       <Main>
