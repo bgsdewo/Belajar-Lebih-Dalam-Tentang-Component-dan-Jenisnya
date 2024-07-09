@@ -176,14 +176,14 @@ function WatchedList({ watched }) {
   );
 }
 
-function BoxMovies({ element }) {
+function BoxMovies({ children }) {
   const [isOpen, setIsOpen] = useState(true);
   return (
     <div className="box">
       <button className="btn-toggle" onClick={() => setIsOpen((open) => !open)}>
         {isOpen ? "–" : "+"}
       </button>
-      {isOpen && element}
+      {isOpen && children}
     </div>
   );
 }
@@ -201,25 +201,46 @@ function Loader() {
     </div>
   );
 }
+
+function ErrorMessage({ message }) {
+  return (
+    <div className="error">
+      <span>error</span> {message}
+    </div>
+  );
+}
 const API_KEY = "4c14ac1";
 export default function App() {
   const [movies, setMovies] = useState([]);
   const [watched, setWatched] = useState(tempWatchedData);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [error, setError] = useState("");
+  const query = "oppenheimer";
   //ini gaboleh karena mengakibatkan infinty loop
   // fetch(`http://www.omdbapi.com/?apikey=${API_KEY}&s=oppenheimer`)
   //   .then((res) => res.json())
   //   .then((data) => setMovies(data));
   useEffect(() => {
     async function fetchMovie() {
-      setIsLoading(true);
-      const res = await fetch(
-        `http://www.omdbapi.com/?apikey=${API_KEY}&s=oppenheimer`
-      );
-      const data = await res.json();
-      setMovies(data.Search);
-      setIsLoading(false);
+      try {
+        setIsLoading(true);
+        const res = await fetch(
+          `http://www.omdbapi.com/?apikey=${API_KEY}&s=${query}`
+        );
+        if (!res.ok) throw new Error("Ada kesalahan");
+        const data = await res.json();
+        //cek kondisi data dri api
+        if (data.Response === "False") throw new Error(data.Error);
+
+        //cek jika ada dari API yg salah
+        console.log(data);
+        setMovies(data.Search);
+        setIsLoading(false);
+      } catch (error) {
+        setError(error.message);
+      } finally {
+        setIsLoading(false);
+      }
     }
 
     fetchMovie();
@@ -232,17 +253,16 @@ export default function App() {
         <NumResult movies={movies} />
       </NavBar>
       <Main>
-        <BoxMovies
-          element={isLoading ? <Loader /> : <MovieList movies={movies} />}
-        />
-        <BoxMovies
-          element={
-            <>
-              <WatchedSummary watched={watched} />
-              <WatchedList watched={watched} />
-            </>
-          }
-        />
+        <BoxMovies>
+          {isLoading && <Loader />}
+          {error && <ErrorMessage message={error} />}
+          {!isLoading && !error && <MovieList movies={movies} />}
+        </BoxMovies>
+
+        <BoxMovies>
+          <WatchedSummary watched={watched} />
+          <WatchedList watched={watched} />
+        </BoxMovies>
       </Main>
     </>
   );
