@@ -214,24 +214,15 @@ export default function App() {
   const [watched, setWatched] = useState(tempWatchedData);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState("");
-  const [query, setQuery] = useState("");
-  const tempQuery = "oppenheimer";
+  const [query, setQuery] = useState("oppenheimer");
 
-  useEffect(() => {
-    console.log(1);
-  }, []);
-
-  useEffect(() => {
-    console.log(2);
-  });
-
-  console.log(3);
   useEffect(() => {
     async function fetchMovie() {
       try {
         setIsLoading(true);
+        setError("");
         const res = await fetch(
-          `http://www.omdbapi.com/?s=${tempQuery}&apikey=${API_KEY}`
+          `http://www.omdbapi.com/?s=${query}&apikey=${API_KEY}`
         );
         if (!res.ok) throw new Error("Ada kesalahan");
         const data = await res.json();
@@ -246,9 +237,13 @@ export default function App() {
         setIsLoading(false);
       }
     }
-
+    if (query.length < 3) {
+      setMovies([]);
+      setError("");
+      return;
+    }
     fetchMovie();
-  }, []);
+  }, [query]);
   return (
     <>
       <NavBar>
