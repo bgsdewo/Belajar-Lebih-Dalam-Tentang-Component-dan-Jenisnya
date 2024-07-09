@@ -190,7 +190,16 @@ function BoxMovies({ children }) {
     </div>
   );
 }
-
+function MovieDetails({ selectedId, onCloseMovie }) {
+  return (
+    <div className="details">
+      <button className="btn-back" onClick={onCloseMovie}>
+        ❌
+      </button>
+      {selectedId}
+    </div>
+  );
+}
 function Main({ children }) {
   return <main className="main">{children}</main>;
 }
@@ -223,7 +232,11 @@ export default function App() {
 
   function handleSelectMovieId(id) {
     console.log(id);
-    setSelectedMovieId(id);
+    setSelectedMovieId((selectedId) => (selectedId === id ? null : id));
+  }
+
+  function handleCloseMovie() {
+    setSelectedMovieId(null);
   }
   useEffect(() => {
     async function fetchMovie() {
@@ -235,7 +248,6 @@ export default function App() {
         );
         if (!res.ok) throw new Error("Ada kesalahan");
         const data = await res.json();
-        //cek kondisi data dri api
         if (data.Response === "False") throw new Error(data.Error);
 
         setMovies(data.Search);
@@ -270,8 +282,17 @@ export default function App() {
         </BoxMovies>
 
         <BoxMovies>
-          <WatchedSummary watched={watched} />
-          <WatchedList watched={watched} />
+          {selectedMovieId ? (
+            <MovieDetails
+              selectedId={selectedMovieId}
+              onCloseMovie={handleCloseMovie}
+            />
+          ) : (
+            <>
+              <WatchedSummary watched={watched} />
+              <WatchedList watched={watched} />
+            </>
+          )}
         </BoxMovies>
       </Main>
     </>
