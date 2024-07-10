@@ -205,7 +205,6 @@ function MovieDetails({ selectedId, onCloseMovie }) {
     Actors: actors,
     Director: director,
   } = movie;
-  console.log(title, year);
 
   useEffect(() => {
     async function getMovieDetails() {
