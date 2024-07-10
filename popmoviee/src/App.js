@@ -250,6 +250,10 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
   useEffect(() => {
     if (!title) return;
     document.title = `PopMovie | ${title}`;
+    return function () {
+      document.title = "PopMovie";
+      console.log(`clean up movie details ${title}`);
+    };
   }, [title]);
 
   return (
