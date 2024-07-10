@@ -135,7 +135,7 @@ function WatchedSummary({ watched }) {
         </p>
         <p>
           <span>🌟</span>
-          <span>{avgUserRating}</span>
+          <span>{avgUserRating.toFixed(1)}</span>
         </p>
         <p>
           <span>⏳</span>
@@ -190,9 +190,14 @@ function BoxMovies({ children }) {
     </div>
   );
 }
-function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
+function MovieDetails({ selectedId, onCloseMovie, onAddWatched, watched }) {
   const [movie, setMovie] = useState({});
+  const [userRating, setUserRating] = useState(0);
   const [isLoading, setIsLoading] = useState(false);
+  const isWatched = watched.some((movie) => movie.imdbID === selectedId);
+  const userRatingWatched = watched.find(
+    (movie) => movie.imdbID === selectedId
+  )?.userRating;
   const {
     Title: title,
     Year: year,
@@ -214,6 +219,7 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
       poster,
       imdbRating: Number(imdbRating),
       runtime: Number(runtime.split(" ").at(0)),
+      userRating: Number(userRating),
     };
     onAddWatched(newWatchedMovie);
     onCloseMovie();
@@ -266,10 +272,26 @@ function MovieDetails({ selectedId, onCloseMovie, onAddWatched }) {
             <p>Starring: {actors}</p>
             <p>Directed by: {director}</p>
             <div className="rating">
-              <StarRating max={10} size={24} color="#fcc419" />
-              <button className="btn-add" onClick={handleAddWatched}>
-                + Add to Watched
-              </button>
+              {!isWatched ? (
+                <>
+                  <StarRating
+                    max={10}
+                    size={24}
+                    color="#fcc419"
+                    onSetRating={setUserRating}
+                  />
+                  {userRating > 0 && (
+                    <button className="btn-add" onClick={handleAddWatched}>
+                      + Add to Watched
+                    </button>
+                  )}
+                </>
+              ) : (
+                <p>
+                  you have watched this movie with a rating of{" "}
+                  {userRatingWatched} / 10
+                </p>
+              )}
             </div>
           </section>
         </>
@@ -367,6 +389,7 @@ export default function App() {
               selectedId={selectedMovieId}
               onCloseMovie={handleCloseMovie}
               onAddWatched={handleAddWatched}
+              watched={watched}
             />
           ) : (
             <>
